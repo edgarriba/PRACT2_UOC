@@ -1,0 +1,221 @@
+package edu.uoc.prac;
+import java.util.ArrayList;
+import java.util.Collections;
+
+/**
+*
+* MeetingGroup class definition
+*
+* @author Edgar Riba
+*
+*/
+
+public class MeetingGroup {
+
+	/** attributes definition */
+	private String name;
+	private Assignment assignment;
+	private ArrayList<Place> places;
+	private ArrayList<User> members;
+	private ArrayList<User> coorganizers;
+	private ArrayList<Meeting> meetings;
+
+	/**
+    * Constructor
+    */
+    public MeetingGroup(String name) {
+    	this.name = name;
+    	this.assignment = null;
+    	this.places = new ArrayList<Place>();
+    	this.members = new ArrayList<User>();
+    	this.coorganizers = new ArrayList<User>();
+    	this.meetings = new ArrayList<Meeting>();
+    }
+    
+    @Override
+    public boolean equals(Object object)
+    {
+        boolean sameSame = false;
+        if (object != null && object instanceof MeetingGroup)
+        {
+            sameSame = this.name.equals(((MeetingGroup) object).name);
+        }
+        return sameSame;
+    }
+    
+    @Override public String toString() {
+        StringBuilder sb = new StringBuilder("\n");
+        // Group name
+		sb.append("Information Meeting Group Name: ").append(this.name).append("\n");
+		// Members
+		if( members.size() <= 0 ) {
+			sb.append("No members to show").append("\n");
+		} else {
+			sb.append("MeetingGroup Members in alphabetical email order: ").append("\n");
+			for (int i = 0; i < members.size(); i++)
+				sb.append( members.get(i) ).append("\n");
+		}
+		// Coorganizers
+		if( coorganizers.size() <= 0 ) {
+			sb.append("No coorganizers to show").append("\n");
+		} else {
+			sb.append("MeetingGroup Coorganizers in insertion order: ").append("\n");
+			for (int i = 0; i < coorganizers.size(); i++)
+				sb.append( coorganizers.get(i) ).append("\n");
+		}
+		// Organizer
+		sb.append("MeetingGroup Organizer Information").append("\n");
+		sb.append( this.assignment.getOrganizer() );
+		// Rates
+		sb.append("Fixed fee: ").append(this.assignment.getFixedFee()).append(" Percentage: ").append(this.assignment.getPercentage()).append("\n");
+		// Places
+		if( places.size() <= 0 ) {
+			sb.append("No places to show").append("\n");
+		} else {
+			sb.append("List of available places------------------").append("\n");
+			for (int i = 0; i < places.size(); i++)
+				sb.append( places.get(i) ).append("\n");
+		}
+		// Meetings
+		if( meetings.size() <= 0 ) {
+			sb.append("NO meetings to show").append("\n");
+		} else {
+			sb.append("MG Meetings Information------------------");
+			for (int i = 0; i < meetings.size(); i++)
+				sb.append( meetings.get(i) ).append("\n");
+		}
+        return sb.toString();
+    }
+    
+    /**
+	* The method adds a user into the members list
+	* @param user type of User
+	*/
+    public void addMember(User user) {	
+		if ( user != null ) {
+			if ( user instanceof User ) {
+				if( !this.members.contains(user) ) {
+					this.members.add(user);
+					user.addMeetingGroup(this);
+		    		System.out.println("New User added.");
+		    	} else {
+		    		System.out.println("Member already in Meeting Group. Info User:  email " + 
+		    							user.getEmail() + " password " + user.getPassword() + "\n");
+		    	}
+			} else {
+				System.out.println("ERROR: Not User type\n");
+			}
+		} else {
+			System.out.println("Member null not allowed. Check User inicialization.\n");
+		}		
+	}
+    
+    /**
+	* The method removes a user from the members list
+	* @param user type of User
+	*/
+    public void removeMember(User user) {	
+		this.members.remove(user);		
+	}
+    
+    /**
+	* The method sorts the members list
+	* @param user type of User
+	*/
+    public void sortMembers() {	
+ 	   Collections.sort(this.members, new UserEmailComparator());	
+	}
+    
+    /**
+	* The mehtod adds a user into the coorganizers list
+	* @param user type of User
+	*/
+    public void addCoorganizer(User user) {	
+		if( !this.coorganizers.contains(user) ) {
+			this.coorganizers.add(user);
+			user.addMeetingGroup(this);
+			System.out.println("New Coorganizer added.");
+		} else {
+			System.out.println("Coorganizer already in Meeting Group. Info User:  email " + 
+								user.getEmail() + " password " + user.getPassword() + "\n");
+		}
+	}
+    
+    /**
+	* The mehtod adds a meeting into the meetings list
+	* @param meeting type of Meeting
+	*/
+    public void addMeeting(Meeting meeting) {
+		if( !this.meetings.contains(meeting) ) {
+			this.meetings.add(meeting);
+			System.out.println("New Meeting added.");
+		} else {
+			System.out.println("Meeting already in Meeting Group. Not added. " + meeting.getDescription() + "\n");
+		}
+  	}
+    
+    /**
+   	* Getter method
+   	* @return type of String
+   	*/
+   	public String getName() {
+   	     return this.name;
+   	}
+   	
+   	/**
+   	* Getter method
+   	* @return type of ArrayList<User>
+   	*/
+   	public ArrayList<User> getMembers() {
+   	     return this.members;
+   	}
+   	
+   	/**
+   	* Getter method
+   	* @return type of ArrayList<Meetings>
+   	*/
+   	public ArrayList<Meeting> getMeetings() {
+   	     return this.meetings;
+   	}  
+   	
+   	/**
+   	* Getter method
+   	* @return type of ArrayList<User>
+   	*/
+   	public ArrayList<User> getCoorganizers() {
+   	     return this.coorganizers;
+   	}  
+   	
+   	/**
+	* Getter method
+	*  @return type of Place
+	*/
+	public ArrayList<Place> getPlaces() {
+		return this.places;
+	}
+   	
+   	/**
+	* Setter method
+	* param type of {@link Place}
+	*/
+	public void AddPlace(Place place) {
+	     this.places.add(place);
+	     place.setMeetingGroup(this);
+	}
+
+	/**
+	* Getter method
+	*  @return type of Assignment
+	*/
+	public Assignment getAssignment() {
+		return this.assignment;
+	}
+	
+	/**
+	* Setter method
+	* param type of {@link Assignment}
+	*/
+	public void setAssignment(Assignment assignment) {
+	     this.assignment = assignment;
+	}
+}
