@@ -24,24 +24,14 @@ public class Country {
     	this.places = new ArrayList<Place>();
     }
     
-    /**
-	* Getter method
-	* @return type of {@link String}
-	*/
-	public String getName() {
-	     return this.name;
-	}
+    /** Getter method **/
+	public String getName() { return this.name;	}
 	
 	/**
 	* Method to add a place
 	* @param type of {@link Place}
 	*/
 	public void addPlace(Place place) {
-	    if ( this.places.contains(place) ){
-	    	System.out.println("Duplicated place in the same country");
-	    }
-	    else{
-	    	this.places.add(place);
-	    }
+		this.places.add(place);
 	}
 }

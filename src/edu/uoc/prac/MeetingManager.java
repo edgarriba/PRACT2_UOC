@@ -30,7 +30,10 @@ public class MeetingManager {
 		this.answers = new ArrayList<Answer>();
     }
     
-    /** Private Methods **/
+    /***********************************************************************************/
+    /** PRIVATE METHODS **/
+    
+    // Search and return a meeting group by its meeting group name
     private MeetingGroup searchMeetingGroupByName(String nameMeetingGroup) {
     	boolean found = false;
     	int i = 0;
@@ -40,7 +43,7 @@ public class MeetingManager {
 		}
     	return found ? meetingGroups.get(i-1) : null;
     }
-    
+    // Search and return a user by his email
     private User searchUserByEmail(String emailUser) {
     	boolean found = false;
     	int i = 0;
@@ -50,7 +53,7 @@ public class MeetingManager {
 		}
     	return found ? users.get(i-1) : null;
     }
-    
+    // Search and return a meeting by its description
     private Meeting searchMeetingByDescription(String descriptionMeeting) {
     	boolean found = false;
     	int i = 0, j = 0;
@@ -65,6 +68,9 @@ public class MeetingManager {
 		}
     	return found ? meetingGroups.get(i-1).getMeetings().get(j-1) : null;
     }
+    
+    /***********************************************************************************/
+    /** PUBLIC METHODS **/
     
     /**
    	* Method instantiate and add a user to the system
@@ -254,7 +260,7 @@ public class MeetingManager {
     			if ( mg.getPlaces().contains(p) ) {
             		throw new MeetingException(MeetingException.PLACE_ALREADY_IN_MEETING_GROUP);
 				} else {
-					mg.AddPlace(p);
+					mg.addPlace(p);
 				}
 			}
     	}

@@ -60,70 +60,17 @@ public class Place {
 		return sb.toString();
     }
 
-	/**
-	* Getter method
-	* @return type of {@link String}
-	*/
-	public String getName() {
-	     return this.name;
-	}
+    /** Getters methods **/
+	public Integer getId()      { return this.id;   }
+	public String  getName()    { return this.name; }
+	public String  getZone()    { return this.zone; }
+	public Country getCountry() { return this.country; }
+	public String  getAddress() { return this.address; }
+	public Boolean getPrivateResidence() { return this.privateResidence; }
 	
-	/**
-	* Getter method
-	* @return type of {@link String}
-	*/
-	public String getAddress() {
-	     return this.address;
-	}
-	
-	/**
-	* Getter method
-	* @return type of {@link Boolean}
-	*/
-	public Boolean getPrivateResidence() {
-	     return this.privateResidence;
-	}
-	
-	/**
-	* Getter method
-	* @return type of {@link String}
-	*/
-	public String getZone() {
-		return this.zone;
-	}
-	
-	/**
-	* Getter method
-	* @return type of {@link Country}
-	*/
-	public Country getCountry() {
-	     return this.country;
-	}
-	
-	/**
-	* Getter method
-	* @return type of {@link Integer}
-	*/
-	public Integer getId() {
-	     return this.id;
-	}
-	
-	/**
-	* Setter method
-	* param type of {@link Integer}
-	*/
-	public void setId(Integer id) {
-	     this.id = id;
-	}
-	
-	/**
-	* Setter method
-	* param type of {@link MeetingGroup}
-	*/
-	public void setMeetingGroup(MeetingGroup meetingGroup) {
-	     this.meetingGroup = meetingGroup;
-	     //meetingGroup.setPlace(this);
-	}
+	/** Setters method **/
+	public void setId(Integer id) { this.id = id; }
+	public void setMeetingGroup(MeetingGroup meetingGroup) { this.meetingGroup = meetingGroup; }
 	
 	/**
 	* Method to add a meeting

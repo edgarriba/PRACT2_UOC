@@ -56,30 +56,12 @@ public class User {
 		return sb.toString();
     }
     
-    /**
-	* Getter method
-	* @return type of String
-	*/
-	public String getEmail() {
-	     return this.email;
-	}
-	
-	/**
-	* Getter method
-	* @return type of String
-	*/
-	public String getPassword() {
-	     return this.password;
-	}
-	
-	/**
-	* Getter method
-	* @return type of ArrayList<String>
-	*/
-	public ArrayList<String> getInterests() {
-	     return this.interests;
-	}
-	
+    /** Getters methods **/
+    public String            getEmail()     { return this.email;     }
+	public String            getPassword()  { return this.password;  }
+	public ArrayList<String> getInterests() { return this.interests; }
+	public ArrayList<Answer> getAnswers()   { return this.answers;   }
+
 	/**
 	* Method to add a meeting
 	* @param type of {@link Meeting}
@@ -93,22 +75,13 @@ public class User {
 	    }
 	}
 	
-	/**
-	* Method to add an Answer
-	* @param type of {@link String}
-	*/
+	/** Adders methods **/
 	public void addInterest(String interest) {
 		this.interests.add(interest);
 	}
 	
-	/**
-	* Method to add an Answer
-	* @param type of {@link Answer}
-	*/
 	public void addAnswer(Answer answer) {
 		this.answers.add(answer);
 	}
-
-	public ArrayList<Answer> getAnswers() { return this.answers; }
 
 } // end class User

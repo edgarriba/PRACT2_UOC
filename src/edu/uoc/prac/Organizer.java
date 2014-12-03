@@ -36,9 +36,7 @@ public class Organizer extends User {
 	* Getter method
 	* @return type of String
 	*/
-	public String getPhone() {
-	     return this.phone;
-	}
+	public String getPhone() { return this.phone; }
 	
 	/**
 	* Method to add an assignment

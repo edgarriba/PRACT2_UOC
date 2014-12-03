@@ -44,22 +44,6 @@ public class Meeting {
     	this.place.addMeeting(this);
     	this.answers = new ArrayList<Answer>();
     }
-
-	/*@Override
-    public boolean equals(Object object)
-    {
-        boolean sameSame = false;
-        if (object != null && object instanceof User)
-        {
-        	ArrayList<User> members = this.meetingGroup.getMembers();
-        	ArrayList<User> coorganizers = this.meetingGroup.getCoorganizers();
-        	Organizer organizer = this.meetingGroup.getAssignment().getOrganizer();
-            sameSame = members.contains((User) object) &&
-            		   coorganizers.contains((User) object) &&
-            		   organizer.equals((User) object);
-        }
-        return sameSame;
-    }*/
 	
 	@Override
     public boolean equals(Object object)

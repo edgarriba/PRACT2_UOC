@@ -26,45 +26,16 @@ public class Assignment {
     	this.setMeetingGroup(meetingGroup);
     }
     
-    /**
-	* Setter method
-	* param type of {@link Organizer}
-	*/
-	public void setOrganizer(Organizer organizer) {
+    /** Getters methods **/
+    public Integer getFixedFee()    { return this.fixedFee;   }
+   	public Double getPercentage()   { return this.percentage; }
+    public Organizer getOrganizer() { return this.organizer;  }
+    
+    /** Setters methods **/
+    public void setMeetingGroup(MeetingGroup meetingGroup) { this.meetingGroup = meetingGroup; }
+    public void setOrganizer(Organizer organizer) {
 	     this.organizer = organizer;
 	     this.organizer.addAssignment(this);
-	}
-	
-	/**
-	* Setter method
-	* param type of {@link MeetingGroup}
-	*/
-	public void setMeetingGroup(MeetingGroup meetingGroup) {
-	     this.meetingGroup = meetingGroup;
-	}
-    
-    /**
-	* Getter method
-	*  @return type of Integer
-	*/
-	public Integer getFixedFee() {
-		return this.fixedFee;
-	}
-	
-	/**
-	* Getter method
-	*  @return type of Double
-	*/
-	public Double getPercentage() {
-		return this.percentage;
-	}
-
-    /**
-	* Getter method
-	*  @return type of Organizer
-	*/
-	public Organizer getOrganizer() {
-		return this.organizer;
 	}
 
 }

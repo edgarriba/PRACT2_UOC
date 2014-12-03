@@ -88,13 +88,36 @@ public class MeetingGroup {
         return sb.toString();
     }
     
-    /**
-	* The method adds a user into the members list
-	* @param user type of User
-	*/
+    /** Getters methods **/
+    public String getName() { return this.name; }
+   	public Assignment getAssignment()   { return this.assignment; }
+   	public ArrayList<User> getMembers() { return this.members;    }
+   	public ArrayList<Place> getPlaces() { return this.places;     }
+   	public ArrayList<Meeting> getMeetings()  { return this.meetings;	 }  
+   	public ArrayList<User> getCoorganizers() { return this.coorganizers; }
+   	
+   	/** Setters methods **/
+   	public void setAssignment(Assignment assignment) { this.assignment = assignment; }
+   	
+   	
+    /** Adders methods **/
     public void addMember(User user) {	
 		this.members.add(user);
 		user.addMeetingGroup(this);
+	}
+    
+    public void addCoorganizer(User user) {	
+		this.coorganizers.add(user);
+		user.addMeetingGroup(this);
+	}
+    
+    public void addMeeting(Meeting meeting) {
+		this.meetings.add(meeting);
+  	}
+    
+   	public void addPlace(Place place) {
+	     this.places.add(place);
+	     place.setMeetingGroup(this);
 	}
     
     /**
@@ -111,87 +134,5 @@ public class MeetingGroup {
 	*/
     public void sortMembers() {	
  	   Collections.sort(this.members, new UserEmailComparator());	
-	}
-    
-    /**
-	* The mehtod adds a user into the coorganizers list
-	* @param user type of User
-	*/
-    public void addCoorganizer(User user) {	
-		this.coorganizers.add(user);
-		user.addMeetingGroup(this);
-	}
-    
-    /**
-	* The mehtod adds a meeting into the meetings list
-	* @param meeting type of Meeting
-	*/
-    public void addMeeting(Meeting meeting) {
-		this.meetings.add(meeting);
-  	}
-    
-    /**
-   	* Getter method
-   	* @return type of String
-   	*/
-   	public String getName() {
-   	     return this.name;
-   	}
-   	
-   	/**
-   	* Getter method
-   	* @return type of ArrayList<User>
-   	*/
-   	public ArrayList<User> getMembers() {
-   	     return this.members;
-   	}
-   	
-   	/**
-   	* Getter method
-   	* @return type of ArrayList<Meetings>
-   	*/
-   	public ArrayList<Meeting> getMeetings() {
-   	     return this.meetings;
-   	}  
-   	
-   	/**
-   	* Getter method
-   	* @return type of ArrayList<User>
-   	*/
-   	public ArrayList<User> getCoorganizers() {
-   	     return this.coorganizers;
-   	}  
-   	
-   	/**
-	* Getter method
-	*  @return type of Place
-	*/
-	public ArrayList<Place> getPlaces() {
-		return this.places;
-	}
-   	
-   	/**
-	* Setter method
-	* param type of {@link Place}
-	*/
-	public void AddPlace(Place place) {
-	     this.places.add(place);
-	     place.setMeetingGroup(this);
-	}
-
-	/**
-	* Getter method
-	*  @return type of Assignment
-	*/
-	public Assignment getAssignment() {
-		return this.assignment;
-	}
-	
-	/**
-	* Setter method
-	* param type of {@link Assignment}
-	*/
-	public void setAssignment(Assignment assignment) {
-	     this.assignment = assignment;
 	}
 }
