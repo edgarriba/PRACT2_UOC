@@ -378,10 +378,8 @@ public class Main {
 				if (st[0].equalsIgnoreCase(Main.SEARCH_MEETING)) {					
 					if (st.length == 3) {
 
-						String m =mm.searchMeeting(st[1], st[2]);
-						
-						// write feedback
-						this.getOut().println(m);
+						mm.searchMeeting(st[1], st[2]);
+
 						
 					} else {
 						this.getOut().println(Main.WRONG_COMMAND+" searchMeeting(email,pwd)");
@@ -439,9 +437,7 @@ public class Main {
 				}
 				if (st[0].equalsIgnoreCase(Main.LIST_WAITING)) {					
 					if (st.length == 2) {
-					    String us =mm.listMeetingAnswers(st[1]);
-					    // write feedback
-						this.getOut().println(us);
+					    mm.listMeetingAnswers(st[1]);
 					}					    					    
 					else {
 					    this.getOut().println(Main.WRONG_COMMAND+" listMeetingAnswers(MeetingDescription)");
@@ -451,7 +447,7 @@ public class Main {
 			}
 			catch (MeetingException e) {
 				this.getOut().println(e.getMessage());
-			}
+			} 
 			catch (Exception e) {
 				e.printStackTrace(System.err);
 			}

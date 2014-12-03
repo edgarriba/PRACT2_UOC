@@ -38,11 +38,7 @@ public class MeetingManager {
 			found = meetingGroups.get(i).getName().equals(nameMeetingGroup);
     		++i;
 		}
-    	if (found) {
-    		return meetingGroups.get(i-1);
-    	} else {
-    		return null;
-    	}
+    	return found ? meetingGroups.get(i-1) : null;
     }
     
     private User searchUserByEmail(String emailUser) {
@@ -52,11 +48,7 @@ public class MeetingManager {
 			found = users.get(i).getEmail().equals(emailUser);
     		++i;
 		}
-    	if (found) {
-    		return users.get(i-1);
-    	} else {
-    		return null;
-    	}
+    	return found ? users.get(i-1) : null;
     }
     
     private Meeting searchMeetingByDescription(String descriptionMeeting) {
@@ -71,11 +63,7 @@ public class MeetingManager {
         	}
     		++i;
 		}
-    	if (found) {
-    		return meetingGroups.get(i-1).getMeetings().get(j-1);
-    	} else {
-    		return null;
-    	}
+    	return found ? meetingGroups.get(i-1).getMeetings().get(j-1) : null;
     }
     
     /**
@@ -142,7 +130,7 @@ public class MeetingManager {
 			} else if ( mg.getCoorganizers().contains(u) ) {
 				throw new MeetingException(MeetingException.USER_IS_ALREADY_A_COORGANIZER);
 			} else {
-				if ( mg.getMembers().contains(u) ) 
+				if ( mg.getMembers().contains(u) ) // member -> coorganizer
 					mg.removeMember(u);
 				mg.addCoorganizer(u);
 			} 
@@ -181,11 +169,8 @@ public class MeetingManager {
    	*/
     public MeetingGroup listAll(String nameMeetingGroup) throws MeetingException {
     	MeetingGroup mg = this.searchMeetingGroupByName(nameMeetingGroup);
-    	if ( mg == null ) {
+    	if ( mg == null )
     		throw new MeetingException(MeetingException.NOT_EXISTING_MEETING_GROUP);
-    	} else {
-        	mg.sortMembers();    		
-    	}
     	return mg;
     }
     
@@ -209,12 +194,29 @@ public class MeetingManager {
    	* Method to search a meeting
    	* 
    	*/
-    public String searchMeeting(String email, String pwd) throws MeetingException {
+    public void searchMeeting(String email, String pwd) throws MeetingException {
     	User u = this.searchUserByEmail(email);
 		if ( !users.contains(u) ) {
     		throw new MeetingException(MeetingException.NOT_EXISTING_USER_MEMBER);
+		} else {
+			StringBuilder sb = new StringBuilder();
+			ArrayList<String> interests = u.getInterests();
+			for (int i = 0; i < interests.size(); i++) {
+				String interest_i = interests.get(i);
+				sb.append("Checking interest .....").append(interest_i).append("\n");
+				for (int j = 0; j < meetingGroups.size(); j++) {
+					String meetinGroup_j = meetingGroups.get(j).getName();
+					boolean match = meetinGroup_j.toLowerCase().contains(interest_i.toLowerCase()) || interest_i.matches( meetinGroup_j );
+					if (match) {
+						sb.append("Matching MeetingGroup ").append(meetinGroup_j).append(" for interest ").append(interest_i);
+					} else {
+						sb.append("No Matching MeetingGroup for interest ").append(interest_i);
+					}
+					if( i<interests.size()-1 && j<meetingGroups.size()) sb.append("\n");
+				}
+			}
+			System.out.println(sb.toString());
 		}
-		return u.matchMeetingGroups(this.meetingGroups);
     }
     
     /**
@@ -297,57 +299,94 @@ public class MeetingManager {
    	*/
     public Answer addAnswer(String descriptionMeeting, String emailUser, String pwdUser, 
     		                String guestsStr, String attendingResultStr) throws MeetingException {
-    	Answer a;
+    	// set initial data
+		Meeting m = this.searchMeetingByDescription(descriptionMeeting);
     	User u = this.searchUserByEmail(emailUser);
-    	if ( u == null ) { // No user found
+    	Integer guests = Integer.parseInt(guestsStr);
+		AttendingResult attendingResult = (attendingResultStr.equals("yes")) ? AttendingResult.Yes : 
+			                              ((attendingResultStr.equals("no")) ? AttendingResult.No :  
+			                            	                                   AttendingResult.WantASpot);
+		Answer a = new Answer(u, m, attendingResult, guests);
+		
+		// checkings
+		if ( u == null ) {
     		throw new MeetingException(MeetingException.USER_NOT_FOUND);
-    	} else {
-    		Meeting m = this.searchMeetingByDescription(descriptionMeeting);
-    		if ( m == null ) { // No meeting found
-        		throw new MeetingException(MeetingException.MEETING_NOT_FOUND);
-			} else if ( !m.getMeetingGroup().getMembers().contains(u) &&
-					    !m.getMeetingGroup().getCoorganizers().contains(u) &&
-					    !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
-				// No user as member, coorganizer or organizer
-        		throw new MeetingException(MeetingException.USER_NOT_FOUND_IN_MG);
-			} else {
-				Integer guests = Integer.parseInt(guestsStr);
-				AttendingResult attendingResult = (attendingResultStr.equals("yes")) ? AttendingResult.Yes : 
-					                              ((attendingResultStr.equals("no")) ? AttendingResult.No :  
-					                            	                                   AttendingResult.WantASpot);
-				a = new Answer(u, m, attendingResult, guests);
-				if ( answers.contains(a) ) {
-	        		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);
-				//} else if ( !m.getIsDraft() ) {
-					//TODO: Advice to confirm meeting					
-				} else if ( a.getGuests() > m.getGuestsPerMember() ) {
-	        		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
-				} else if ( m.getAttendeLimit().equals(new Integer(1)) && 
-						    a.getGuests()+new Integer(1) >= m.getAttendeeTotal() ) {
-					if ( m.getWaitList().equals(new Integer(0)) ) {
-		        		throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
-					} else {
-						a = new Answer(u, m, AttendingResult.WantASpot, guests);
-						answers.add(a);
-						u.addAnswer(a);
-						m.addAnswer(a);
-						return a;
-					}
+    	} else if  ( m == null ) {
+    		throw new MeetingException(MeetingException.MEETING_NOT_FOUND);
+		} else if ( !m.getMeetingGroup().getMembers().contains(u) &&
+			    !m.getMeetingGroup().getCoorganizers().contains(u) &&
+			    !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
+			// No user nas member, coorganizer or organizer
+			throw new MeetingException(MeetingException.USER_NOT_FOUND_IN_MG);
+		} else if ( answers.contains(a) ) {
+    		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);	
+		} else {
+			if(!m.getIsDraft()) System.out.println("This meeting is a draft. Please wait organizer confirmation");
+			if ( a.getGuests() > m.getGuestsPerMember() ) {
+        		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
+			} else if ( m.getAttendeLimit().equals(new Integer(1)) && 
+					    a.getGuests()+new Integer(1) >= m.getAttendeeTotal() &&
+					    m.getWaitList().equals(new Integer(1)) ) {
+	        		
+					//throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
+					System.out.println("The meeting is full but has waiting List. Wait in Waiting List");
+					a.setAttendingResult(AttendingResult.WantASpot);
+			} else if( a.getGuests().equals(new Integer(0)) || 
+					   attendingResult.equals(AttendingResult.No)) {
+				System.out.println("Answer with Not attendance to Meeting to be added");
+			}
+			if ( u.equals(m.getMeetingGroup().getAssignment().getOrganizer()) && attendingResult.equals(AttendingResult.Yes ) ) {
+				m.setIsDraft(true);					
+			}
+			answers.add(a);
+			u.addAnswer(a);
+			m.addAnswer(a);
+			return a;	
+		} 
+		
+		
+		/*
+		if ( u.equals(m.getMeetingGroup().getAssignment().getOrganizer()) && 
+		     attendingResult.equals(AttendingResult.Yes ) )
+			m.setIsDraft(true);
+		
+		if(!m.getIsDraft()) System.out.println("This meeting is a draft. Please wait organizer confirmation");
+		if ( u == null ) {
+    		throw new MeetingException(MeetingException.USER_NOT_FOUND);
+    	} else if  ( m == null ) {
+    		throw new MeetingException(MeetingException.MEETING_NOT_FOUND);
+		} else if ( !m.getMeetingGroup().getMembers().contains(u) &&
+				    !m.getMeetingGroup().getCoorganizers().contains(u) &&
+				    !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
+			// No user as member, coorganizer or organizer
+    		throw new MeetingException(MeetingException.USER_NOT_FOUND_IN_MG);
+		} else {
+			
+			if ( answers.contains(a) ) {
+        		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);
+			} else if ( a.getGuests() > m.getGuestsPerMember() ) {
+        		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
+			
+			} else if ( m.getAttendeLimit().equals(new Integer(1)) && 
+					    a.getGuests()+new Integer(1) >= m.getAttendeeTotal() ) {
+				if ( m.getWaitList().equals(new Integer(0)) ) {
+	        		throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
 				} else {
-					answers.add(a);
-					u.addAnswer(a);
-					m.addAnswer(a);
-					return a;
+					a.setAttendingResult(AttendingResult.WantASpot);
 				}
 			}
-    	}
+			answers.add(a);
+			u.addAnswer(a);
+			m.addAnswer(a);
+			return a;
+		}*/
     }
     
     /**
    	* Method show all the answers in the specified meeting
    	* 
    	*/
-    public String listMeetingAnswers(String descriptionMeeting) throws MeetingException {
+    public void listMeetingAnswers(String descriptionMeeting) throws MeetingException {
 		StringBuilder sb = new StringBuilder();
     	Meeting m = this.searchMeetingByDescription(descriptionMeeting);
 		if ( m == null || m.getAnswers().size() == 0 ) { // No meeting found
@@ -369,6 +408,6 @@ public class MeetingManager {
 					sb.append(m.getAnswers().get(i));
 		
 		}
-		return sb.toString();
+		System.out.println(sb.toString());
     }
 }

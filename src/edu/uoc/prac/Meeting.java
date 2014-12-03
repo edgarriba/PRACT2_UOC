@@ -45,7 +45,7 @@ public class Meeting {
     	this.answers = new ArrayList<Answer>();
     }
 
-	@Override
+	/*@Override
     public boolean equals(Object object)
     {
         boolean sameSame = false;
@@ -57,6 +57,17 @@ public class Meeting {
             sameSame = members.contains((User) object) &&
             		   coorganizers.contains((User) object) &&
             		   organizer.equals((User) object);
+        }
+        return sameSame;
+    }*/
+	
+	@Override
+    public boolean equals(Object object)
+    {
+        boolean sameSame = false;
+        if (object != null && object instanceof Meeting)
+        {
+        	sameSame = this.description.equals(((Meeting) object).getDescription());
         }
         return sameSame;
     }
@@ -76,15 +87,18 @@ public class Meeting {
     
     /**  Getters methods **/
 	public String            getDescription()     { return this.description;     }
-    public Date              getDate()            { return this.date;            }
+    private Date             getDate()            { return this.date;            }
 	public Boolean           getIsDraft()         { return this.isDraft;         }
 	public Integer           getAttendeLimit()    { return this.attendeLimit;    }
 	public Integer           getWaitList()        { return this.waitList;        }
 	public Integer           getGuestsPerMember() { return this.guestsPerMember; }
 	public Integer           getAttendeeTotal()   { return this.attendeeTotal;   }
-	public Place             getPlace ()          { return this.place;           }
+	private Place            getPlace ()          { return this.place;           }
 	public MeetingGroup      getMeetingGroup()    { return this.meetingGroup;    }
 	public ArrayList<Answer> getAnswers()         { return this.answers;         }
+	
+	/** Setters methods **/
+    public void setIsDraft(Boolean isDraft) { this.isDraft=isDraft; }
 
 	/**
 	* Method to add an Answer

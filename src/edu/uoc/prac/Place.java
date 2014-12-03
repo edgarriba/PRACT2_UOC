@@ -55,7 +55,7 @@ public class Place {
         sb.append(" Name: ").append(this.getName());
         sb.append(" Address: ").append(this.getAddress());
         sb.append("Zone: ").append(this.getZone());
-        sb.append(" Private Residence: ").append( (this.getPrivateResidence()) ? "Yes" : "No" );
+        sb.append(" Private Residence: ").append( (this.getPrivateResidence()) ? "No" : "No" );
         sb.append(" Country: ").append(this.getCountry().getName());
 		return sb.toString();
     }
@@ -130,11 +130,6 @@ public class Place {
 	* @param type of {@link Meeting}
 	*/
 	public void addMeeting(Meeting meeting) {
-	    if ( this.meetings.contains(meeting) ){
-	    	System.out.println("Duplicated meeting in the same place");
-	    }
-	    else{
 	    	this.meetings.add(meeting);
-	    }
 	}
 }

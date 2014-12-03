@@ -52,7 +52,7 @@ public class Answer {
         sb.append("User information: ").append(u);
         // Answer info
         sb.append("Guests Coming: ").append(this.getGuests()).append("\n");
-        sb.append("Attending Result: ").append(this.getAttendingResult().toString()).append("\n");
+        sb.append("Attending Result: ").append( (this.getAttendingResult().equals(AttendingResult.WantASpot)) ? "WantASpot": this.getAttendingResult().toString().toLowerCase()).append("\n");
         // Meeting info
         String s = this.getMeeting().toString();
         s = s.substring(s.indexOf('\n')+1); // remove first empty line
@@ -65,5 +65,8 @@ public class Answer {
     public User            getUser()             { return this.user;             }
     public Integer         getGuests()           { return this.guests;           }
     public AttendingResult getAttendingResult()  { return this.attendingResult;  }
+    
+    /** Setters methods **/
+    public void setAttendingResult(AttendingResult attendingResult) { this.attendingResult=attendingResult; }
 
 }

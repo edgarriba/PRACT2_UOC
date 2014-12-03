@@ -38,7 +38,7 @@ public class MeetingGroup {
         boolean sameSame = false;
         if (object != null && object instanceof MeetingGroup)
         {
-            sameSame = this.name.equals(((MeetingGroup) object).name);
+            sameSame = this.name.equals(((MeetingGroup) object).getName());
         }
         return sameSame;
     }
@@ -52,6 +52,7 @@ public class MeetingGroup {
 			sb.append("No members to show").append("\n");
 		} else {
 			sb.append("MeetingGroup Members in alphabetical email order: ").append("\n");
+			this.sortMembers(); // sort members
 			for (int i = 0; i < members.size(); i++)
 				sb.append( members.get(i) ).append("\n");
 		}
@@ -92,22 +93,8 @@ public class MeetingGroup {
 	* @param user type of User
 	*/
     public void addMember(User user) {	
-		if ( user != null ) {
-			if ( user instanceof User ) {
-				if( !this.members.contains(user) ) {
-					this.members.add(user);
-					user.addMeetingGroup(this);
-		    		System.out.println("New User added.");
-		    	} else {
-		    		System.out.println("Member already in Meeting Group. Info User:  email " + 
-		    							user.getEmail() + " password " + user.getPassword() + "\n");
-		    	}
-			} else {
-				System.out.println("ERROR: Not User type\n");
-			}
-		} else {
-			System.out.println("Member null not allowed. Check User inicialization.\n");
-		}		
+		this.members.add(user);
+		user.addMeetingGroup(this);
 	}
     
     /**
@@ -131,14 +118,8 @@ public class MeetingGroup {
 	* @param user type of User
 	*/
     public void addCoorganizer(User user) {	
-		if( !this.coorganizers.contains(user) ) {
-			this.coorganizers.add(user);
-			user.addMeetingGroup(this);
-			System.out.println("New Coorganizer added.");
-		} else {
-			System.out.println("Coorganizer already in Meeting Group. Info User:  email " + 
-								user.getEmail() + " password " + user.getPassword() + "\n");
-		}
+		this.coorganizers.add(user);
+		user.addMeetingGroup(this);
 	}
     
     /**
@@ -146,12 +127,7 @@ public class MeetingGroup {
 	* @param meeting type of Meeting
 	*/
     public void addMeeting(Meeting meeting) {
-		if( !this.meetings.contains(meeting) ) {
-			this.meetings.add(meeting);
-			System.out.println("New Meeting added.");
-		} else {
-			System.out.println("Meeting already in Meeting Group. Not added. " + meeting.getDescription() + "\n");
-		}
+		this.meetings.add(meeting);
   	}
     
     /**

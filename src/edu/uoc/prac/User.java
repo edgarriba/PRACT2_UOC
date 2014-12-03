@@ -109,29 +109,6 @@ public class User {
 		this.answers.add(answer);
 	}
 
-	/**
-	* Method to add search a meeting group with given interests
-	* @param type of {@link MeetingGroup}
-	*/
-	public String matchMeetingGroups(ArrayList<MeetingGroup> meetingGroups) {
-        StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < interests.size(); i++) {
-			String interest_i = interests.get(i);
-			sb.append("Checking interest .....").append(interest_i).append("\n");
-			for (int j = 0; j < meetingGroups.size(); j++) {
-				String meetinGroup_j = meetingGroups.get(j).getName();
-				boolean match = meetinGroup_j.toLowerCase().contains(interest_i.toLowerCase()) || interest_i.matches( meetinGroup_j );
-				if (match) {
-					sb.append("Matching MeetingGroup ").append(meetinGroup_j).append(" for interest ").append(interest_i);
-				} else {
-					sb.append("No Matching MeetingGroup for interest ").append(interest_i);
-				}
-				if( i<interests.size()-1 && j<meetingGroups.size()) sb.append("\n");
-			}
-		}
-		return sb.toString();
-	}
-
 	public ArrayList<Answer> getAnswers() { return this.answers; }
 
 } // end class User
