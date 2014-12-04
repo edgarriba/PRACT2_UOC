@@ -125,21 +125,19 @@ public class MeetingManager {
    	*/
     public MeetingGroup addCoorganizer(String nameMeetingGroup, String email, String pwd) throws MeetingException {
     	MeetingGroup mg = this.searchMeetingGroupByName(nameMeetingGroup);
+    	User u = this.searchUserByEmail(email);
     	if ( !meetingGroups.contains(mg) ) {
     		throw new MeetingException(MeetingException.NOT_EXISTING_MEETING_GROUP);
-    	} else {
-			User u = new User(email, pwd);
-			if ( !users.contains(u) ) {
-				throw new MeetingException(MeetingException.NOT_EXISTING_USER_MEMBER);
-			} else if ( mg.getAssignment().getOrganizer().equals(u) ) {
-				throw new MeetingException(MeetingException.USER_IS_ALREADY_THE_ORGANIZER);
-			} else if ( mg.getCoorganizers().contains(u) ) {
-				throw new MeetingException(MeetingException.USER_IS_ALREADY_A_COORGANIZER);
-			} else {
-				if ( mg.getMembers().contains(u) ) // member -> coorganizer
-					mg.removeMember(u);
-				mg.addCoorganizer(u);
-			} 
+    	} else if ( u == null ) {
+			throw new MeetingException(MeetingException.NOT_EXISTING_USER_MEMBER);
+		} else if ( mg.getAssignment().getOrganizer().equals(u) ) {
+			throw new MeetingException(MeetingException.USER_IS_ALREADY_THE_ORGANIZER);
+		} else if ( mg.getCoorganizers().contains(u) ) {
+			throw new MeetingException(MeetingException.USER_IS_ALREADY_A_COORGANIZER);
+		} else {
+			if ( mg.getMembers().contains(u) ) // member -> coorganizer
+				mg.removeMember(u);
+			mg.addCoorganizer(u);
     	}
     	return mg;
     }
@@ -150,21 +148,19 @@ public class MeetingManager {
    	*/
     public MeetingGroup addMember(String nameMeetingGroup, String email, String pwd) throws MeetingException {
     	MeetingGroup mg = this.searchMeetingGroupByName(nameMeetingGroup);
+    	User u = this.searchUserByEmail(email);
     	if ( !meetingGroups.contains(mg) ) {
     		throw new MeetingException(MeetingException.NOT_EXISTING_MEETING_GROUP);
-    	} else {
-        	User u = new User(email, pwd);
-    		if ( !users.contains(u) ) {
-        		throw new MeetingException(MeetingException.NOT_EXISTING_USER_MEMBER);
-    		} else if ( mg.getMembers().contains(u) ) {
-        		throw new MeetingException(MeetingException.USER_IS_ALREADY_A_MEMBER);
-			} else if ( mg.getAssignment().getOrganizer().equals(u) ) {
-        		throw new MeetingException(MeetingException.USER_IS_ALREADY_THE_ORGANIZER);
-			} else if ( mg.getCoorganizers().contains(u) ) {
-        		throw new MeetingException(MeetingException.USER_IS_ALREADY_A_COORGANIZER);
-			} else {
-				mg.addMember(u);
-			} 
+    	} else if ( u == null ) {
+    		throw new MeetingException(MeetingException.NOT_EXISTING_USER_MEMBER);
+		} else if ( mg.getMembers().contains(u) ) {
+    		throw new MeetingException(MeetingException.USER_IS_ALREADY_A_MEMBER);
+		} else if ( mg.getAssignment().getOrganizer().equals(u) ) {
+    		throw new MeetingException(MeetingException.USER_IS_ALREADY_THE_ORGANIZER);
+		} else if ( mg.getCoorganizers().contains(u) ) {
+    		throw new MeetingException(MeetingException.USER_IS_ALREADY_A_COORGANIZER);
+		} else {
+			mg.addMember(u);
     	}
     	return mg;
     }
@@ -232,7 +228,7 @@ public class MeetingManager {
     public Place addPlace(String namePlace, String address, String zone, 
 		     String privateResidenceStr, String nameCountry) throws MeetingException {
     	Country country = new Country(nameCountry);
-    	Boolean privateResidence = (privateResidenceStr.equals("yes")) ? false : true ;
+    	Boolean privateResidence = (privateResidenceStr.equals("yes")) ? true : false ;
     	Place p = new Place(namePlace, address, zone, privateResidence, country);
     	if ( places.contains(p) ) {
     		throw new MeetingException(MeetingException.PLACE_ALREADY_EXISTS);
@@ -349,43 +345,6 @@ public class MeetingManager {
 			m.addAnswer(a);
 			return a;	
 		} 
-		
-		
-		/*
-		if ( u.equals(m.getMeetingGroup().getAssignment().getOrganizer()) && 
-		     attendingResult.equals(AttendingResult.Yes ) )
-			m.setIsDraft(true);
-		
-		if(!m.getIsDraft()) System.out.println("This meeting is a draft. Please wait organizer confirmation");
-		if ( u == null ) {
-    		throw new MeetingException(MeetingException.USER_NOT_FOUND);
-    	} else if  ( m == null ) {
-    		throw new MeetingException(MeetingException.MEETING_NOT_FOUND);
-		} else if ( !m.getMeetingGroup().getMembers().contains(u) &&
-				    !m.getMeetingGroup().getCoorganizers().contains(u) &&
-				    !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
-			// No user as member, coorganizer or organizer
-    		throw new MeetingException(MeetingException.USER_NOT_FOUND_IN_MG);
-		} else {
-			
-			if ( answers.contains(a) ) {
-        		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);
-			} else if ( a.getGuests() > m.getGuestsPerMember() ) {
-        		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
-			
-			} else if ( m.getAttendeLimit().equals(new Integer(1)) && 
-					    a.getGuests()+new Integer(1) >= m.getAttendeeTotal() ) {
-				if ( m.getWaitList().equals(new Integer(0)) ) {
-	        		throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
-				} else {
-					a.setAttendingResult(AttendingResult.WantASpot);
-				}
-			}
-			answers.add(a);
-			u.addAnswer(a);
-			m.addAnswer(a);
-			return a;
-		}*/
     }
     
     /**

@@ -67,12 +67,7 @@ public class User {
 	* @param type of {@link Meeting}
 	*/
 	public void addMeetingGroup(MeetingGroup meetingGroup) {
-	    if ( this.meetingGroups.contains(meetingGroup) ){
-	    	System.out.println("Duplicated meeting group in the same user");
-	    }
-	    else{
 	    	this.meetingGroups.add(meetingGroup);
-	    }
 	}
 	
 	/** Adders methods **/
