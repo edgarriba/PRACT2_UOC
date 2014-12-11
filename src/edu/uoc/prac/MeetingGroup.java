@@ -54,7 +54,7 @@ public class MeetingGroup {
 			sb.append("MeetingGroup Members in alphabetical email order: ").append("\n");
 			this.sortMembers(); // sort members
 			for (int i = 0; i < members.size(); i++)
-				sb.append( members.get(i) ).append("\n");
+				sb.append(" * ").append( members.get(i) ).append("\n");
 		}
 		// Coorganizers
 		if( coorganizers.size() <= 0 ) {
@@ -62,7 +62,7 @@ public class MeetingGroup {
 		} else {
 			sb.append("MeetingGroup Coorganizers in insertion order: ").append("\n");
 			for (int i = 0; i < coorganizers.size(); i++)
-				sb.append( coorganizers.get(i) ).append("\n");
+				sb.append(" * ").append( coorganizers.get(i) ).append("\n");
 		}
 		// Organizer
 		sb.append("MeetingGroup Organizer Information").append("\n");

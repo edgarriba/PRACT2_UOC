@@ -44,7 +44,7 @@ public class User {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         // Personal info
-		sb.append("* ").append(this.email).append(" ").append(this.password).append("\n");
+		sb.append(this.email).append(" ").append(this.password).append("\n");
 		// Interests
 		if( interests.size() <= 0 ) {
 			sb.append("Not available Interests for user yet").append("\n");

@@ -1,6 +1,4 @@
 package edu.uoc.prac;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 /**
 *
@@ -27,9 +25,7 @@ public class Answer {
     	this.guests = guests;
     	this.attendingResult = attendingResult;
     	this.user = user;
-    	//this.user.addAnswer(this);
     	this.meeting = meeting;
-    	//this.meeting.addAnswer(this);
     }
     
     @Override
@@ -48,8 +44,7 @@ public class Answer {
     @Override public String toString() {
         StringBuilder sb = new StringBuilder("\n");
         // User info
-        String u = this.getUser().toString().substring(2);
-        sb.append("User information: ").append(u);
+        sb.append("User information: ").append(this.getUser());
         // Answer info
         sb.append("Guests Coming: ").append(this.getGuests()).append("\n");
         sb.append("Attending Result: ").append( (this.getAttendingResult().equals(AttendingResult.WantASpot)) ? "WantASpot": this.getAttendingResult().toString().toLowerCase()).append("\n");
@@ -64,6 +59,7 @@ public class Answer {
     public Meeting         getMeeting()          { return this.meeting;          }
     public User            getUser()             { return this.user;             }
     public Integer         getGuests()           { return this.guests;           }
+    public Boolean         getIsAttending()      { return this.attending;        }
     public AttendingResult getAttendingResult()  { return this.attendingResult;  }
     
     /** Setters methods **/

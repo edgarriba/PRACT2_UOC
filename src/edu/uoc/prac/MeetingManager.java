@@ -56,17 +56,12 @@ public class MeetingManager {
     // Search and return a meeting by its description
     private Meeting searchMeetingByDescription(String descriptionMeeting) {
     	boolean found = false;
-    	int i = 0, j = 0;
-    	while ( !found && i < meetingGroups.size() ) {
-    		MeetingGroup mg = meetingGroups.get(i);
-    		j = 0;
-        	while ( !found && j < mg.getMeetings().size() ) {
-        		found = mg.getMeetings().get(j).getDescription().equals(descriptionMeeting);
-        		++j;
-        	}
+    	int i = 0;
+    	while ( !found && i < meetings.size() ) {
+			found = meetings.get(i).getDescription().equals(descriptionMeeting);
     		++i;
 		}
-    	return found ? meetingGroups.get(i-1).getMeetings().get(j-1) : null;
+    	return found ? meetings.get(i-1) : null;
     }
     
     /***********************************************************************************/
@@ -94,7 +89,7 @@ public class MeetingManager {
     	StringBuilder sb = new StringBuilder();
     	sb.append("MeetingManager Users:").append("\n");
     	for (int i = 0; i < users.size(); i++)
-			sb.append(users.get(i)).append("\n");
+			sb.append(" * ").append(users.get(i)).append("\n");
     	return sb.toString();
     }
     
@@ -278,7 +273,7 @@ public class MeetingManager {
         		throw new MeetingException(MeetingException.PLACE_NOT_FOUND);
     		} else {
     		    Date date = new Date(System.currentTimeMillis());
-    			Boolean isDraft = (isDraftStr.equals("0")) ? false : true;
+    			Boolean isDraft = (isDraftStr.equals("1")) ? true : false;
     			Integer attendeLimit = Integer.parseInt(attendeLimitStr);
     			Integer waitList = (waitListStr.equals("1")) ? 1 : 0;
     			Integer guestPerMember = Integer.parseInt(guestPerMemberStr);
@@ -288,6 +283,7 @@ public class MeetingManager {
     			if ( mg.getMeetings().contains(m) ) {
             		throw new MeetingException(MeetingException.MEETING_ALREADY_IN_GROUP);
 				} else {
+					meetings.add(m);
 					mg.addMeeting(m);
 				}
 			}
@@ -316,35 +312,36 @@ public class MeetingManager {
     	} else if  ( m == null ) {
     		throw new MeetingException(MeetingException.MEETING_NOT_FOUND);
 		} else if ( !m.getMeetingGroup().getMembers().contains(u) &&
-			    !m.getMeetingGroup().getCoorganizers().contains(u) &&
-			    !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
+			        !m.getMeetingGroup().getCoorganizers().contains(u) &&
+			        !m.getMeetingGroup().getAssignment().getOrganizer().equals(u) ) {
 			// No user nas member, coorganizer or organizer
 			throw new MeetingException(MeetingException.USER_NOT_FOUND_IN_MG);
 		} else if ( answers.contains(a) ) {
-    		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);	
+    		throw new MeetingException(MeetingException.ANSWER_ALREADY_FOUND_FOR_USER_MEETING);
+		} else if ( a.getGuests() > m.getGuestsPerMember() ) {
+    		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
 		} else {
-			if(!m.getIsDraft()) System.out.println("This meeting is a draft. Please wait organizer confirmation");
-			if ( a.getGuests() > m.getGuestsPerMember() ) {
-        		throw new MeetingException(MeetingException.ANSWER_EXCEEDS_GUESTS_PER_MEETING);
-			} else if ( m.getAttendeLimit().equals(new Integer(1)) && 
-					    a.getGuests()+new Integer(1) >= m.getAttendeeTotal() &&
-					    m.getWaitList().equals(new Integer(1)) ) {
-	        		
-					//throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
+			if ( m.getAttendeLimit().equals(new Integer(1)) && a.getGuests()+new Integer(1) >= m.getAttendeeTotal() ) {
+	        	if ( !m.getWaitList().equals(new Integer(1)) ) {
+					throw new MeetingException(MeetingException.THE_MEETING_IS_FULL);
+				} else {
 					System.out.println("The meeting is full but has waiting List. Wait in Waiting List");
-					a.setAttendingResult(AttendingResult.WantASpot);
+				    a.setAttendingResult(AttendingResult.WantASpot);
+				}
 			} else if( a.getGuests().equals(new Integer(0)) || 
 					   attendingResult.equals(AttendingResult.No)) {
 				System.out.println("Answer with Not attendance to Meeting to be added");
 			}
-			if ( u.equals(m.getMeetingGroup().getAssignment().getOrganizer()) && attendingResult.equals(AttendingResult.Yes ) ) {
-				m.setIsDraft(true);					
+			if ( u.equals(m.getMeetingGroup().getAssignment().getOrganizer()) && a.getIsAttending() ) {
+				m.setIsDraft(false);
 			}
+			if (m.getIsDraft()) System.out.println("This meeting is a draft. Please wait organizer confirmation");
+			
 			answers.add(a);
 			u.addAnswer(a);
 			m.addAnswer(a);
-			return a;	
-		} 
+			return a;
+		}
     }
     
     /**
@@ -362,12 +359,12 @@ public class MeetingManager {
 				if ( m.getAnswers().get(i).getAttendingResult().equals(AttendingResult.Yes) )
 					sb.append(m.getAnswers().get(i));
 			
-			sb.append("In waiting list");
+			sb.append("\n").append("In waiting list");
 			for (int i = 0; i < m.getAnswers().size(); i++)
 				if ( m.getAnswers().get(i).getAttendingResult().equals(AttendingResult.WantASpot) )
 					sb.append(m.getAnswers().get(i));
 			
-			sb.append("No Attending to Meeting");
+			sb.append("\n").append("No Attending to Meeting");
 			for (int i = 0; i < m.getAnswers().size(); i++)
 				if ( m.getAnswers().get(i).getAttendingResult().equals(AttendingResult.No) )
 					sb.append(m.getAnswers().get(i));
